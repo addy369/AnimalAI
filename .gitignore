@@ -1,0 +1,16 @@
+env/*
+!env/README.md
+examples/submission/test_submission/env/*
+!examples/submission/test_submission/env/README.md
+models/
+summaries/
+/.idea
+__pycache__/
+UnitySDK.log
+venv/
+*/venv
+/dev
+build/
+dist/
+*.egg-info*
+*.eggs*
