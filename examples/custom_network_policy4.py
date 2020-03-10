@@ -76,7 +76,7 @@ class LstmPolicy(RecurrentActorCriticPolicy):
 
                     extracted_features = tf.layers.flatten(conv_1)
                     extracted_features = active(tf.layers.dense(extracted_features, 1024, name='fc'))
-                    print("hello")
+                    print("1")
                 else:
                     extracted_features = tf.layers.flatten(self.processed_obs)
                     for i, layer_size in enumerate(layers):
@@ -89,7 +89,7 @@ class LstmPolicy(RecurrentActorCriticPolicy):
 
                 rnn_output, self.snew = lstm(input_sequence, masks, self.states_ph, 'lstm1', n_hidden=n_lstm,
                                              layer_norm=layer_norm)
-                print("hello")
+                print("2")
                 rnn_output = seq_to_batch(rnn_output)
                 value_fn = linear(rnn_output, 'vf', 1)
 

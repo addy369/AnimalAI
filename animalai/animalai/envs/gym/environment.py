@@ -79,7 +79,7 @@ class AnimalAIEnv(gym.Env):
                 "if it is wrapped in a gym.")
         self.brain_name = self._env.external_brain_names[0]
         brain = self._env.brains[self.brain_name]
-
+        self.brain=brain
         if brain.number_visual_observations == 0:
             raise UnityGymException("Environment provides no visual observations.")
 
