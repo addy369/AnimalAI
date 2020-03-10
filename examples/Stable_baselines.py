@@ -13,7 +13,7 @@ from animalai_wrapper import AnimalWrapper, AnimalStack, AnimalSkip
 from stable_baselines.ppo1 import PPO1
 from stable_baselines.common.evaluation import evaluate_policy
 from stable_baselines.common.policies import FeedForwardPolicy, register_policy
-from custom_network_policy4 import LstmPolicy
+from custom_network_policy_final import LstmPolicy
 
 worker_id = random.randint(1, 100)
 arena_config_in = 'configs/1-Food.yaml'
