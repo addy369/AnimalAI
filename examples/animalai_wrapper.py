@@ -61,8 +61,6 @@ class AnimalSkip(gym.Wrapper):
                 if(self.frames_time == -1):
                     total_reward -= 1.0
             '''
-        
-
         return frame, total_reward, done, info
 
     def reset(self, config=None):
@@ -116,8 +114,6 @@ class AnimalStack(gym.Wrapper):
             for _ in range(self.k-1):
                 self.frames.append(frames)
 
-
-
         for _ in range(self.k_vels-1):
             self.vel_info.append([0, 0, 0, self.time])
             #self.vel_info.append(self.pos)
@@ -126,6 +122,7 @@ class AnimalStack(gym.Wrapper):
 
     def step(self, action):
         ob, reward, done, info = self.env.step(action)
+        info = info.tolist()
         frames = ob[0]
         vel  = ob[1]
         self.frames_time -= 1
