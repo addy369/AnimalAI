@@ -46,14 +46,13 @@ def animal_conv_residual_fixup_attention(inputs, depths = [16,32,32,64]):
         out = tf.layers.max_pooling2d(out, pool_size=3, strides=2, padding='same')
         out = residual_block_fixup_attention(out, i, name='rb1' + str(i))
         out = residual_block_fixup_attention(out, i, name='rb2' + str(i))
-        print('shapes of layer_' + str(i), str(out.get_shape().as_list()))
+        #print('shapes of layer_' + str(i), str(out.get_shape().as_list()))
     out = tf.nn.elu(out)
     return out
 
 def lstm(extracted_features, dones_ph, cell_state_hidden, scope, n_hidden, n_env,n_steps,init_scale=1.0,layer_norm=False):
     """
     Creates an Long Short Term Memory (LSTM) cell for TensorFlow
-
     :param extracted_features: (TensorFlow Tensor) The input tensor for the LSTM cell (before converting into sequence)
     :param dones_ph: (TensorFlow Tensor) The mask tensor for the LSTM cell (before converting into sequence)
     :param cell_state_hidden: (TensorFlow Tensor) The state tensor for the LSTM cell
@@ -65,12 +64,12 @@ def lstm(extracted_features, dones_ph, cell_state_hidden, scope, n_hidden, n_env
     """
     #_, n_input = [v.value for v in input_tensor[0].get_shape()]
     n_input = extracted_features.get_shape()[1].value
-    print(n_input)
-    print(extracted_features.get_shape())
+    #print(n_input)
+    #print(extracted_features.get_shape())
     input_sequence = batch_to_seq(extracted_features, n_env, n_steps)
     masks = batch_to_seq(dones_ph, n_env, n_steps)
-    print(len(input_sequence))
-    print(len(masks))
+    #print(len(input_sequence))
+    #print(len(masks))
     with tf.variable_scope(scope):
         weight_x = tf.get_variable("wx", [n_input, n_hidden * 4], initializer=ortho_init(init_scale))
         weight_h = tf.get_variable("wh", [n_hidden, n_hidden * 4], initializer=ortho_init(init_scale))
@@ -95,10 +94,10 @@ def lstm(extracted_features, dones_ph, cell_state_hidden, scope, n_hidden, n_env
             gates = _ln(tf.matmul(_input, weight_x), gain_x, bias_x) \
                     + _ln(tf.matmul(hidden, weight_h), gain_h, bias_h) + bias
         else:
-            print(_input.get_shape())
-            print(weight_x.get_shape())
-            print(hidden.get_shape())
-            print(weight_h.get_shape())
+            #print(_input.get_shape())
+            #print(weight_x.get_shape())
+            #print(hidden.get_shape())
+            #print(weight_h.get_shape())
             gates = tf.matmul(_input, weight_x) + tf.matmul(hidden, weight_h) + bias
         in_gate, forget_gate, out_gate, cell_candidate = tf.split(axis=1, num_or_size_splits=4, value=gates)
         in_gate = tf.nn.sigmoid(in_gate)
@@ -117,7 +116,6 @@ def lstm(extracted_features, dones_ph, cell_state_hidden, scope, n_hidden, n_env
 class LstmPolicy(RecurrentActorCriticPolicy):
     """
     Policy object that implements actor critic, using LSTMs.
-
     :param sess: (TensorFlow session) The current TensorFlow session
     :param ob_space: (Gym Space) The observation space of the environment
     :param ac_space: (Gym Space) The action space of the environment
@@ -173,20 +171,20 @@ class LstmPolicy(RecurrentActorCriticPolicy):
                     conv1 = animal_conv_residual_fixup_attention(conv1, depths = [16,32,64,128])
                     extracted_features = tf.layers.flatten(conv_1)
                     extracted_features = active(tf.layers.dense(extracted_features, 1024, name='fc'))
-                    print("hello")
+                    #print("hello")
                 else:
                     extracted_features = tf.layers.flatten(self.processed_obs)
                     for i, layer_size in enumerate(layers):
                         extracted_features = act_fun(linear(extracted_features, 'pi_fc' + str(i), n_hidden=layer_size,
                                                             init_scale=np.sqrt(2)))
-                print(extracted_features)
+                #print(extracted_features)
                 #input_sequence = batch_to_seq(extracted_features, self.n_env, n_steps)
 
                 #masks = batch_to_seq(self.dones_ph, self.n_env, n_steps)
-                print(input_sequence)
+                #print(input_sequence)
                 rnn_output, self.snew = lstm(extracted_features, self.dones_ph, self.states_ph, 'lstm1', n_lstm,self.n_env,self.n_steps,
                                              layer_norm=layer_norm)
-                print("hello")
+                #print("hello")
                 rnn_output = seq_to_batch(rnn_output)
                 value_fn = linear(rnn_output, 'vf', 1)
 
