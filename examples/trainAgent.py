@@ -22,8 +22,8 @@ from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
 
 
 worker_id = random.randint(1, 100)
-arena_config_in = 'configs/curriculum/0.yaml'
-dataset_path = '../../saved_environment_final1/extra_data/'
+dataset_path = 'dataset/'
+tensorboard_log_path = 'tensorboard_log/'
 VISUAL_FRAMES_COUNT = 2
 VEL_FRAMES_COUNT = 2
 SKIP_FRAMES = 1
@@ -64,7 +64,7 @@ def create_env_fn(num_actors=1, inference = True, config=None, seed=None):
     return env
 
 # Define environments
-env = create_env_fn(num_actors = 1, inference=False, config=arena_config_in, seed=0)
+env = create_env_fn(num_actors = 1, inference=False, seed=0)
 env = make_vec_env(env, n_envs=4)
 
 # # register policy
@@ -76,36 +76,45 @@ model = PPO2('MyPolicy', env, n_steps=256)
 #########################
 # Dataset concatenation #
 #########################
-### only use once, and while using this, comment all other code
 
-# all_npzs = sorted(glob.glob(dataset_path+'*.npz'))
-# print(all_npzs)
+def dataset_concatenation(dataset_path):
+    '''
+    Use only when you have datasets of seperate environments.
+    If not, and the code already has a concatenated all_data.npz, ***do not use the function***
 
-# npz_path = all_npzs[0]
-# data = np.load(npz_path)
-# all_data = {'observations': data['observations'],
-#             'rewards': data['rewards'] ,
-#             'episode_returns': data['episode_returns'] ,
-#             'actions': data['actions'],
-#             'episode_starts': data['episode_starts'] }
+    Input: Directory where expert trajectory per environment .npz files are present
+    Output: A all_data.npz in the same directory
+    '''
+    all_npzs = sorted(glob.glob(dataset_path+'*.npz'))
+    print(all_npzs)
 
-# print(all_data['observations'].shape, all_data['rewards'].shape, all_data['episode_returns'].shape, all_data['actions'].shape, all_data['episode_starts'].shape)
+    npz_path = all_npzs[0]
+    data = np.load(npz_path)
+    all_data = {'observations': data['observations'],
+                'rewards': data['rewards'] ,
+                'episode_returns': data['episode_returns'] ,
+                'actions': data['actions'],
+                'episode_starts': data['episode_starts'] }
 
-# for npz_path in all_npzs[1:]:
-#     data = np.load(npz_path)
-#     print(npz_path)
-#     #print(data['observations'].shape, data['rewards'].shape, data['episode_returns'].shape, data['actions'].shape, data['episode_starts'].shape)
-#     all_data['observations'] = np.concatenate((all_data['observations'], data['observations']))
-#     all_data['rewards'] = np.concatenate((all_data['rewards'], data['rewards']))
-#     all_data['episode_returns'] = np.concatenate((all_data['episode_returns'], data['episode_returns']))
-#     all_data['actions'] = np.concatenate((all_data['actions'], data['actions']))
-#     all_data['episode_starts'] = np.concatenate((all_data['episode_starts'], data['episode_starts']))
-#     print(all_data['observations'].shape, all_data['rewards'].shape, all_data['episode_returns'].shape, all_data['actions'].shape, all_data['episode_starts'].shape)
+    print(all_data['observations'].shape, all_data['rewards'].shape, all_data['episode_returns'].shape, all_data['actions'].shape, all_data['episode_starts'].shape)
 
-# all_data['actions'] = all_data['actions'].reshape(-1,1)
-# print(all_data['observations'].shape, all_data['rewards'].shape, all_data['episode_returns'].shape, all_data['actions'].shape, all_data['episode_starts'].shape)
-# save_path = '../../saved_environment_final1/all_data'
-# np.savez(save_path, **all_data)
+    for npz_path in all_npzs[1:]:
+        data = np.load(npz_path)
+        print(npz_path)
+        #print(data['observations'].shape, data['rewards'].shape, data['episode_returns'].shape, data['actions'].shape, data['episode_starts'].shape)
+        all_data['observations'] = np.concatenate((all_data['observations'], data['observations']))
+        all_data['rewards'] = np.concatenate((all_data['rewards'], data['rewards']))
+        all_data['episode_returns'] = np.concatenate((all_data['episode_returns'], data['episode_returns']))
+        all_data['actions'] = np.concatenate((all_data['actions'], data['actions']))
+        all_data['episode_starts'] = np.concatenate((all_data['episode_starts'], data['episode_starts']))
+        print(all_data['observations'].shape, all_data['rewards'].shape, all_data['episode_returns'].shape, all_data['actions'].shape, all_data['episode_starts'].shape)
+
+    all_data['actions'] = all_data['actions'].reshape(-1,1)
+    print(all_data['observations'].shape, all_data['rewards'].shape, all_data['episode_returns'].shape, all_data['actions'].shape, all_data['episode_starts'].shape)
+    save_path = dataset_path+'all_data'
+    np.savez(save_path, **all_data)
+
+#dataset_concatenation(dataset_path)
 
 ##################
 # Pretrain model #
@@ -124,14 +133,13 @@ model.save('ppo_model_after_bc')
 del model
 env.close()
 
+# Curriculum implemented is extremely basic one. (Need to improvise later on)
 # Curriculum is a newly made folder. In google drive, read the note
 all_arenas = sorted(glob.glob('configs/Curriculum/*.yaml'))
 print(all_arenas)
 
-model_name = 'ppo_model_after_bc' 
-#all_steps = 150000
-#model_name = 'ppo_model_after_training_arena_1'
-all_frames_vec = [200000, 200000, 100000, 200000, 200000, 200000, 200000, 200000]
+model_name = 'ppo_model_after_bc'
+all_frames_vec = [200000, 200000, 100000, 200000, 200000, 200000, 200000, 200000] #no of tsteps per curriculum
 
 for i in range(len(all_arenas)):
     # create arena 
@@ -148,16 +156,9 @@ for i in range(len(all_arenas)):
     model.learn(total_timesteps=frames_idx)
     model_name = "ppo_model_after_training_arena_{}".format(i)
     model.save(model_name)
+    env.close()
 
     del model
     del env
 
 print('Training complete!!')
-
-
-# # Enjoy trained agent
-# obs = env.reset()
-# total_reward=np.zeros(4)
-# while True:
-#     action, _states = model.predict(obs)
-#     obs, rewards, dones, info = env.step(action)

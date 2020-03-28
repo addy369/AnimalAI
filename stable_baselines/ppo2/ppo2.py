@@ -51,13 +51,14 @@ class PPO2(ActorCriticRLModel):
     """
     def __init__(self, policy, env, gamma=0.99, n_steps=128, ent_coef=0.01, learning_rate=2.5e-4, vf_coef=0.5,
                  max_grad_norm=0.5, lam=0.95, nminibatches=4, noptepochs=4, cliprange=0.2, cliprange_vf=None,
-                 verbose=1, tensorboard_log='/media/eventhorizon/DATA/animal_ai_tensorboard_data', _init_setup_model=True, policy_kwargs=None,
+                 verbose=1, tensorboard_log='/tmp', _init_setup_model=True, policy_kwargs=None,
                  full_tensorboard_log=False, seed=None, n_cpu_tf_sess=None):
 
         super().__init__(policy=policy, env=env, verbose=verbose, requires_vec_env=True,
                          _init_setup_model=_init_setup_model, policy_kwargs=policy_kwargs,
                          seed=seed, n_cpu_tf_sess=n_cpu_tf_sess)
 
+        print('Path where tensorboard logs are stored: {}', tensorboard_log)
         self.learning_rate = learning_rate
         self.cliprange = cliprange
         self.cliprange_vf = cliprange_vf
