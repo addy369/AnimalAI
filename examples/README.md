@@ -14,7 +14,7 @@ Fill up the basic documentation here. (Some images, where we started and all (ke
   * Examples of how to use a gym and unity environment in code
 * `custom_network_policy_final.py`
   * Consists of our model. (Inspired by the winner of the competition)
-  * Currently does not include velocity components nor the entire pipeline. **Future Work**
+  * Currently does not include velocity components in the entire pipeline. **Future Work**
 * `configs/Curriculum`
   * The curriculum and its arenas.
   * Read the **note** to understand the arenas.
