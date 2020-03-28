@@ -149,7 +149,7 @@ for i in range(len(all_arenas)):
     print("##  Curriculum {} ##".format(i))
     print('####################')
 
-    model = PPO2.load(model_name, env, verbose=1, tensorboard_log=tensorboard_log_path, full_tensorboard_log=False)
+    model = PPO2.load(model_name, env)
 
     frames_idx = all_frames_vec[i]
     print('{} arena is used for training for {} timesteps'.format(all_arenas[i], frames_idx))
