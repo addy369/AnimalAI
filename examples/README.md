@@ -4,6 +4,23 @@
 
 Fill up the basic documentation here. (Some images, where we started and all (keep it short)) 
 
+## **Our Proposed Solution**
+
+We implemented a reformed architecture which uses Proximal Policy Optimization for training the agent and also uses Behavior Cloning for incorporating Expert Trajectories, which considerably reduce the training time and also improve agent’s performance on some of the harder tasks compared to an agent without Imitation Learning techniques.
+
+The Model Architecture is as shown below:
+
+![Model Arch](https://github.com/addy369/AnimalAI/blob/master/Images/ModelArch.JPG)
+
+We also used Behavior Cloning, whose basic structure is as follows:
+*Courtesy of Caude Sammut, Encyclopedia of Machine Learning*
+
+![BC](https://github.com/addy369/AnimalAI/blob/master/Images/BC.gif)
+
+### Results
+
+![Image](https://github.com/addy369/AnimalAI/blob/master/Images/RLImage.JPG)
+
 ## Code Structure:
 * `trainAgent.py`
   * Main code to run
