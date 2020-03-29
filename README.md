@@ -18,9 +18,28 @@ We will also reopen submissions in the coming days in order to allow you to keep
   <img height="300" src="documentation/PrefabsPictures/steampunkFOURcrop.png">
 </p>
 
+
+
 **July 1st - November 1st**
 
 The Animal-AI Olympics is an AI competition with tests inspired by animal cognition. Participants are given a small environment with just seven different classes of objects that can be placed inside. In each test, the agent needs to retrieve the food in the environment, but to do so there are obstacles to overcome, ramps to climb, boxes to push, and areas that must be avoided. The real challenge is that we don't provide the tests in advance. It's up to you to explore the possibilities with the environment and build interesting configurations that can help create an agent that understands how the environment's physics work and the affordances that it has. The final submission should be an agent capable of robust food retrieval behaviour similar to that of many kinds of animals. We know the animals can pass these tests, it's time to see if AI can too.
+
+## **Our Proposed Solution**
+
+We implemented a reformed architecture which uses Proximal Policy Optimization for training the agent and also uses Behavior Cloning for incorporating Expert Trajectories, which considerably reduce the training time and also improve agent’s performance on some of the harder tasks compared to an agent without Imitation Learning techniques.
+
+The Model Architecture is as shown below:
+
+![Model Arch](https://github.com/addy369/AnimalAI/blob/master/Images/ModelArch.JPG)
+
+We also used Behavior Cloning, whose basic structure is as follows:
+*Courtesy of Caude Sammut, Encyclopedia of Machine Learning*
+
+![BC](https://github.com/addy369/AnimalAI/blob/master/Images/BC.gif)
+
+### Results
+
+![Image](https://github.com/addy369/AnimalAI/blob/master/Images/RLImage.JPG)
 
 ## Prizes $32,000 (equivalent value)
 
@@ -35,6 +54,8 @@ The Animal-AI Olympics is an AI competition with tests inspired by animal cognit
 See [competition launch page](https://mdcrosby.com/blog/animalailaunch.html) and official rules for further details.
 
 **Important** Please check the competition rules [here](http://animalaiolympics.com/rules.html). **To submit to the competition and be considered for prizes you must also fill in [this form](https://forms.gle/PKCgp2JAWvjf4c9i6)**. Entry to the competition ([via EvalAI](https://evalai.cloudcv.org/web/challenges/challenge-page/396/overview)) constitutes agreement with all competition rules. 
+
+
 
 ## Overview
 
