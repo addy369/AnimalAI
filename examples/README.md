@@ -21,6 +21,12 @@ We also used Behavior Cloning, whose basic structure is as follows:
 
 ![Image](https://github.com/addy369/AnimalAI/blob/master/Images/RLImage.JPG)
 
+#### Agent in Action:
+
+
+![Agent!!!](https://github.com/addy369/AnimalAI/blob/master/giphy.gif)
+
+
 ## Code Structure:
 * `trainAgent.py`
   * Main code to run
